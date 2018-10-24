@@ -172,6 +172,14 @@ maxconnections=24
 masternode=1
 masternodeprivkey=$key
 externalip=$ip
+addnode=51.15.202.138
+addnode=163.172.179.150
+addnode=51.15.246.208
+addnode=51.158.68.234
+addnode=51.15.104.11
+addnode=51.15.104.1
+addnode=51.15.127.13
+addnode=51.15.82.37
 EOF
 chown -R $whoami:$whoami /home/$whoami
 
