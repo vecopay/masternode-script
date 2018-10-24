@@ -14,7 +14,7 @@ This is a complete guide to setup a Masternode for Veco Coin.  This method uses 
 
 - In your wallet, select 'Debug Console' from the Tools menu
 - Use command 'masternode genkey' (this is your Masternode Private Key)
-- Open Bitvise SSH Client, enter your VPS IP, use port "22" and login with username "root"
+- Open Bitvise SSH Client, enter your VPS IP, use port '22' and login with username 'root'
 - Use the password provided by the VPS provider to gain access to the server
 - Once you are logged in, copy and paste the Masternode installation script below and follow the on-screen instructions 
 
