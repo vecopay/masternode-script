@@ -233,7 +233,7 @@ echo "3 - In the Debug Console type the command 'masternode outputs' (these outp
 echo "4 - In your wallet, select 'Open Masternode Configuration File' from the Tools menu"
 echo "5 - Following the example, enter the required details on a new line (without #) and save the file"
 echo "6 - In your wallet, click 'Reload Config' from the 'Masternodes' tab"
-echo "7 - 7 - Select your Masternode and click 'Start alias'"
+echo "7 - Select your Masternode and click 'Start alias'"
 echo "8 - In your VPS terminal, use command 'veco-cli masternode status' and you should see your Masternode was successfully started"
 echo ""
 decho "If you have any issues, please get in contact with the Veco Developers on Discord (https://discord.gg/Z7j9mz6)" 
