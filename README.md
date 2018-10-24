@@ -1,4 +1,4 @@
-## Veco Masternode Installation Script
+## Veco Masternode Installation Guide
 
 This is a complete guide to setup a Masternode for Veco Coin.  This method uses a "cold" Windows wallet with a "hot" Ubuntu 16.04 Linux VPS.  The reason for this is so your coins will be safe in your Windows wallet offline and the VPS will host the Masternode but will not hold any coins.
 
@@ -10,7 +10,7 @@ This is a complete guide to setup a Masternode for Veco Coin.  This method uses 
 4. Ubuntu 16.04 VPS
 
 
-## Setting up the Masternode
+## Running the Masternode script
 
 - In your wallet, select 'Debug Console' from the Tools menu
 - Use command 'masternode genkey' (this is your Masternode Private Key)
@@ -22,6 +22,17 @@ This is a complete guide to setup a Masternode for Veco Coin.  This method uses 
 ```bash
 wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/install.sh && chmod +x install.sh && ./install.sh
 ```
+
+## Completing the Masternode setup
+
+- In your VPS terminal, use command 'veco-cli mnsync status' and wait for AssetID: to be 999
+- In your wallet, select 'Debug Console' from the Tools menu
+- In the Debug Console type the command 'masternode outputs' (these outputs will be used in Masternode Configuration File)
+- In your wallet, select 'Open Masternode Configuration File' from the Tools menu
+- Following the example, enter the required details on a new line (without #) and save the file
+- In your wallet, click 'Reload Config' from the 'Masternodes' tab
+- Select your Masternode and click 'Start alias'
+- In your VPS terminal, use command 'veco-cli masternode status' and you should see your Masternode was successfully started
 
 ---
 
