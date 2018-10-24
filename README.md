@@ -5,16 +5,16 @@ This is a complete guide to setup a Masternode for Veco Coin.  This method uses 
 ## Requirements
 
 1. Download the latest Veco Windows wallet [**here**](https://github.com/VecoOfficial/Veco/releases)
-2. Exactly 1000 VECO coins sent to a new receiving address
-3. Download and install Putty [**here**](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html) 
+2. Download and install Bitvise SSH Client [**here**](https://www.bitvise.com/ssh-client-download)
+3. Exactly 1000 VECO coins sent to a new receiving address with at least 15 confirmations
+4. Ubuntu 16.04 VPS
 
 
 ## Setting up the Masternode
 
-- Go to your Windows Veco wallet and from the menu, select Tools and click on "Debug Console"
-- Use command masternode genkey (this is your Masternode Private Key)
-- Get an Ubuntu 16.04 VPS
-- Open Putty, enter your VPS IP, use port "22" and login with username "root"
+- In your wallet, select 'Debug Console' from the Tools menu
+- Use command 'masternode genkey' (this is your Masternode Private Key)
+- Open Bitvise SSH Client, enter your VPS IP, use port "22" and login with username "root"
 - Use the password provided by the VPS provider to gain access to the server
 - Once you are logged in, copy and paste the Masternode installation script below and follow the on-screen instructions 
 
