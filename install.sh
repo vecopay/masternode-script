@@ -2,8 +2,8 @@
 
 #############################
 # Script by Veco Developers #
-# Veco Core v1.0.0	    #
-# https://veco.info/	    #
+# Veco Core v1.0.0          #
+# https://veco.info/        #
 #############################
 
 LOG_FILE=/tmp/install.log
