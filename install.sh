@@ -2,7 +2,7 @@
 
 #############################
 # Script by Veco Developers #
-# Veco Core v1.0.0          #
+# Veco Core v1.1.0.0        #
 # https://veco.info/        #
 #############################
 
@@ -186,8 +186,8 @@ chown -R $whoami:$whoami /home/$whoami
 # Install Veco Daemon
 echo 'Downloading daemon...'
 cd
-wget https://github.com/VecoOfficial/Veco/releases/download/v1.0.0/vecoCore-1.0.0-linux64-cli.Ubuntu16.04.tar.gz >> $LOG_FILE 2>&1
-tar xvzf vecoCore-1.0.0-linux64-cli.Ubuntu16.04.tar.gz >> $LOG_FILE 2>&1
+wget https://github.com/VecoOfficial/Veco/releases/download/v1.1.0.0/vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
+tar xvzf vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
 chmod -R 755 veco
 cp veco/vecod /usr/bin/ >> $LOG_FILE 2>&1
 cp veco/veco-cli /usr/bin/ >> $LOG_FILE 2>&1
