@@ -36,6 +36,18 @@ wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/maste
 
 ---
 
+## Update script (from 1.0.0.0 to 1.1.0.0)
+
+To launch the installation, connect to your VPS via SSH and run this command:
+
+```bash
+wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/update_to_1.1.0.0.sh && chmod +x update_to_1.1.0.0.sh && ./update_to_1.1.0.0.sh
+```
+
+Follow the on-screen instructions.
+
+---
+
 
 ## Error Troubleshooting
 If for some reason you don’t have Git installed, you can install git with the following command:
