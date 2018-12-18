@@ -27,7 +27,7 @@ cat <<'FIG'
  '----------------'  '----------------'  '----------------'  '----------------' 
 FIG
 
-decho "\nStarting Veco 1.1.0.0 Masternode update. This will take a few minutes...\n"
+decho "Starting Veco 1.1.0.0 Masternode update. This will take a few minutes..."
 
 ## Check if root user
 if [[ $EUID -ne 0 ]]; then
@@ -46,14 +46,14 @@ if [ $? -ne 0 ]; then
 fi
 
 ## Stop active core
-decho "Stoping active Veco core..."
+echo "Stoping active Veco core..."
 pkill -f vecod >> $LOG_FILE 2>&1
 
 ## Wait to kill properly
 sleep 5
 
 ## Download and Install new bin
-decho "Downloading new core and installing it..."
+echo "Downloading new core and installing it..."
 wget https://github.com/VecoOfficial/Veco/releases/download/v1.1.0.0/vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
 sudo tar xvzf vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
 chmod -R 755 veco
@@ -63,7 +63,7 @@ sudo cp veco/veco-tx /usr/bin/ >> $LOG_FILE 2>&1
 rm -rf veco >> $LOG_FILE 2>&1
 
 ## Backup configuration
-decho "Backup configuration file..."
+echo "Backup configuration file..."
 
 if [ "$whoami" != "root" ]; then
 	path=/home/$whoami
@@ -74,11 +74,11 @@ fi
 cd $path
 
 ## Relunch core
-decho "Relaunching Veco core..."
+echo "Relaunching Veco core..."
 sudo -H -u $whoami bash -c 'vecod' >> $LOG_FILE 2>&1
 
 ## Update sentinel
-decho "Updating sentinel..."
+echo "Updating sentinel..."
 cd $path/sentinel
 git pull >> $LOG_FILE 2>&1
 
