@@ -90,7 +90,6 @@ fi
 decho "Updating system and installing required packages..."   
 
 apt-get -y update >> $LOG_FILE 2>&1
-apt-get -y upgrade >> $LOG_FILE 2>&1
 
 # Install required packages
 decho "Installing base packages and dependencies..."
