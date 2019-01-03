@@ -75,7 +75,7 @@ cd $path
 
 ## Relunch core
 echo "Relaunching Veco core..."
-sudo -H -u $whoami bash -c 'vecod' >> $LOG_FILE 2>&1
+sudo -H -u $whoami bash -c 'vecod -reindex' >> $LOG_FILE 2>&1
 
 ## Update sentinel
 echo "Updating sentinel..."
