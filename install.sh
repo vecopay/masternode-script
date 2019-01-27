@@ -101,6 +101,7 @@ apt-get -y install unzip >> $LOG_FILE 2>&1
 apt-get -y install virtualenv >> $LOG_FILE 2>&1
 apt-get -y install python-virtualenv >> $LOG_FILE 2>&1
 apt-get -y install pwgen >> $LOG_FILE 2>&1
+apt-get -y install mc >> $LOG_FILE 2>&1
 
 # Install daemon packages
 decho "Installing daemon packages and dependencies..."
@@ -167,7 +168,7 @@ rpcallowip=127.0.0.1
 listen=1
 server=1
 daemon=1
-maxconnections=24
+maxconnections=8
 masternode=1
 masternodeprivkey=$key
 externalip=$ip
