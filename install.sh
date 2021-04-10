@@ -186,16 +186,16 @@ chown -R $whoami:$whoami /home/$whoami
 # Install Veco Daemon
 echo 'Downloading daemon...'
 cd
-wget https://github.com/VecoOfficial/Veco/releases/download/v1.1.0.0/vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
-tar xvzf vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
-chmod -R 755 veco
-cp veco/vecod /usr/bin/ >> $LOG_FILE 2>&1
-cp veco/veco-cli /usr/bin/ >> $LOG_FILE 2>&1
-cp veco/veco-tx /usr/bin/ >> $LOG_FILE 2>&1
-rm -rf veco >> $LOG_FILE 2>&1
+wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+tar xvzf vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+chmod -R 755 vecocore-1.12.2.6/bin
+cp vecocore-1.12.2.6/bin/vecod /usr/bin/ >> $LOG_FILE 2>&1
+cp vecocore-1.12.2.6/bin/veco-cli /usr/bin/ >> $LOG_FILE 2>&1
+cp vecocore-1.12.2.6/bin/veco-tx /usr/bin/ >> $LOG_FILE 2>&1
+vecocore-1.12.2.6 >> $LOG_FILE 2>&1
 
 # Run vecod as selected user
-sudo -H -u $whoami bash -c 'vecod' >> $LOG_FILE 2>&1
+sudo -H -u $whoami bash -c 'vecod -reindex' >> $LOG_FILE 2>&1
 
 echo 'Veco Core prepared and launched...'
 
