@@ -2,8 +2,8 @@
 
 #################################
 # Script by Veco Developers     #
-# Update to Veco Core v1.1.0.0  #
-# https://veco.info/            #
+# Update to Veco Core v1.12.2.6 #
+# https://veco.to/              #
 #################################
 
 LOG_FILE=/tmp/update.log
@@ -27,7 +27,7 @@ cat <<'FIG'
  '----------------'  '----------------'  '----------------'  '----------------' 
 FIG
 
-decho "Starting Veco 1.1.0.0 Masternode update. This will take a few minutes..."
+decho "Starting Veco 1.12.2.6 Masternode update. This will take a few minutes..."
 
 ## Check if root user
 if [[ $EUID -ne 0 ]]; then
@@ -50,17 +50,17 @@ echo "Stoping active Veco core..."
 pkill -f vecod >> $LOG_FILE 2>&1
 
 ## Wait to kill properly
-sleep 5
+sleep 10
 
 ## Download and Install new bin
 echo "Downloading new core and installing it..."
-wget https://github.com/VecoOfficial/Veco/releases/download/v1.1.0.0/vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
-sudo tar xvzf vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
-chmod -R 755 veco
-sudo cp veco/vecod /usr/bin/ >> $LOG_FILE 2>&1
-sudo cp veco/veco-cli /usr/bin/ >> $LOG_FILE 2>&1
-sudo cp veco/veco-tx /usr/bin/ >> $LOG_FILE 2>&1
-rm -rf veco >> $LOG_FILE 2>&1
+wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+sudo tar xvzf vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+chmod -R 755 vecocore-1.12.2.6
+sudo cp vecocore-1.12.2.6/bin/vecod /usr/bin/ >> $LOG_FILE 2>&1
+sudo cp vecocore-1.12.2.6/bin/veco-cli /usr/bin/ >> $LOG_FILE 2>&1
+sudo cp vecocore-1.12.2.6/bin/veco-tx /usr/bin/ >> $LOG_FILE 2>&1
+rm -rf vecocore-1.12.2.6 >> $LOG_FILE 2>&1
 
 ## Backup configuration
 echo "Backup configuration file..."
@@ -75,7 +75,8 @@ cd $path
 
 ## Relunch core
 echo "Relaunching Veco core..."
-sudo -H -u $whoami bash -c 'vecod -reindex' >> $LOG_FILE 2>&1
+chown -R $whoami:$whoami /home/$whoami/.vecocore
+sudo -H -u $whoami bash -c 'vecod' >> $LOG_FILE 2>&1
 
 ## Update sentinel
 echo "Updating sentinel..."
