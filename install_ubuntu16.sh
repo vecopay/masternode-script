@@ -2,11 +2,11 @@
 
 #############################
 # Script by Veco Developers #
-# Veco Core v1.1.0.0        #
-# https://veco.info/        #
+# Veco Core v1.12.2.6       #
+# https://veco.to/          #
 #############################
 
-LOG_FILE=/tmp/install.log
+LOG_FILE=/tmp/vecoinstall.log
 
 decho () {
   echo `date +"%H:%M:%S"` $1
@@ -70,24 +70,9 @@ if [[ "$key" == "" ]]; then
 	exit 3
 fi
 read -e -p "(Optional) Install Fail2ban? (Recommended) [Y/n]: " install_fail2ban
-read -e -p "(Optional) Install UFW and configure ports? (Recommended) [Y/n]: " UFW
-
-# Install swap
-decho "Enabling a swap partition..." 
-
-if free | awk '/^Swap:/ {exit !$2}'; then
-	echo "Has swap..."
-else
-	touch /var/swap.img
-	chmod 600 /var/swap.img
-	dd if=/dev/zero of=/var/swap.img bs=1024k count=2048
-	mkswap /var/swap.img
-	swapon /var/swap.img
-	echo "/var/swap.img none swap sw 0 0" >> /etc/fstab
-fi
 
 # Update package and upgrade Ubuntu
-decho "Updating system and installing required packages..."   
+decho "Updating system and installing required packages..."
 
 apt-get -y update >> $LOG_FILE 2>&1
 
@@ -126,19 +111,6 @@ if [[ ("$install_fail2ban" == "y" || "$install_fail2ban" == "Y" || "$install_fai
 	systemctl start fail2ban >> $LOG_FILE 2>&1
 fi
 
-if [[ ("$UFW" == "y" || "$UFW" == "Y" || "$UFW" == "") ]]; then
-	decho "Optional install: UFW"
-	apt-get -y install ufw >> $LOG_FILE 2>&1
-	ufw allow ssh/tcp >> $LOG_FILE 2>&1
-	ufw allow sftp/tcp >> $LOG_FILE 2>&1
-	ufw allow 26919/tcp >> $LOG_FILE 2>&1
-	ufw allow 26920/tcp >> $LOG_FILE 2>&1
-	ufw default deny incoming >> $LOG_FILE 2>&1
-	ufw default allow outgoing >> $LOG_FILE 2>&1
-	ufw logging on >> $LOG_FILE 2>&1
-	ufw --force enable >> $LOG_FILE 2>&1
-fi
-
 decho "Create user $whoami (if necessary)"
 
 # Deactivate trap only for this command
@@ -153,14 +125,16 @@ else
 fi
 
 # Create veco.conf
-decho "Setting up Veco Core..." 
+decho "Setting up Veco Core..."
 
 # Generate random passwords
 user=`pwgen -s 16 1`
 password=`pwgen -s 64 1`
 
-echo 'Creating veco.conf...'
-mkdir -p /home/$whoami/.vecocore/
+echo 'Downloading bootstrap and creating veco.conf...'
+wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/bootstrap.tar.gz>> $LOG_FILE 2>&1
+tar xvzf bootstrap.tar.gz -C /home/$whoami>> $LOG_FILE 2>&1
+rm -rf bootstrap.tar.gz >> $LOG_FILE 2>&1
 cat << EOF > /home/$whoami/.vecocore/veco.conf
 rpcuser=$user
 rpcpassword=$password
@@ -172,29 +146,36 @@ maxconnections=8
 masternode=1
 masternodeprivkey=$key
 externalip=$ip
-addnode=51.15.202.138
-addnode=163.172.179.150
-addnode=51.15.246.208
-addnode=51.158.68.234
-addnode=51.15.104.11
-addnode=51.15.104.1
-addnode=51.15.127.13
-addnode=51.15.82.37
 EOF
-chown -R $whoami:$whoami /home/$whoami
+chown -R $whoami:$whoami /home/$whoami/.vecocore
 
 # Install Veco Daemon
 echo 'Downloading daemon...'
 cd
-wget https://github.com/VecoOfficial/Veco/releases/download/v1.1.0.0/vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
-tar xvzf vecocore-1.1.0.0-x86_64-linux-gnu.tar.gz >> $LOG_FILE 2>&1
-chmod -R 755 veco
-cp veco/vecod /usr/bin/ >> $LOG_FILE 2>&1
-cp veco/veco-cli /usr/bin/ >> $LOG_FILE 2>&1
-cp veco/veco-tx /usr/bin/ >> $LOG_FILE 2>&1
-rm -rf veco >> $LOG_FILE 2>&1
+wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+tar xvzf vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+chmod -R 755 vecocore-1.12.2.6
+
+## Stop active core
+echo 'Looking for active daemon...'
+SERVICE="vecod"
+if pgrep -x "$SERVICE" >/dev/null
+then
+echo "Stoping active Veco daemon..."
+pkill -f vecod >> $LOG_FILE 2>&1
+## Wait to kill properly
+sleep 30
+else
+echo "No active daemon found"
+fi
+
+cp vecocore-1.12.2.6/bin/vecod /usr/bin/ >> $LOG_FILE 2>&1
+cp vecocore-1.12.2.6/bin/veco-cli /usr/bin/ >> $LOG_FILE 2>&1
+cp vecocore-1.12.2.6/bin/veco-tx /usr/bin/ >> $LOG_FILE 2>&1
+rm -rf vecocore-1.12.2.6 >> $LOG_FILE 2>&1
 
 # Run vecod as selected user
+chown -R $whoami:$whoami /home/$whoami/.vecocore
 sudo -H -u $whoami bash -c 'vecod' >> $LOG_FILE 2>&1
 
 echo 'Veco Core prepared and launched...'
@@ -206,6 +187,7 @@ decho "Setting up sentinel..."
 
 # Install sentinel
 echo 'Downloading sentinel...'
+rm -rf /home/$whoami/sentinel >> $LOG_FILE 2>&1
 git clone https://github.com/VecoOfficial/sentinel.git /home/$whoami/sentinel >> $LOG_FILE 2>&1
 chown -R $whoami:$whoami /home/$whoami/sentinel >> $LOG_FILE 2>&1
 
@@ -235,16 +217,16 @@ rm newCrontab >> $LOG_FILE 2>&1
 decho "Starting your Masternode"
 echo ""
 echo "To start your Masternode please follow the steps below:"
-echo "1 - In your VPS terminal, use command 'veco-cli mnsync status' and wait for AssetID: to be 999" 
+echo "1 - In your VPS terminal, use command 'veco-cli mnsync status' and wait for AssetID: to be 999"
 echo "2 - In your wallet, select 'Debug Console' from the Tools menu"
-echo "3 - In the Debug Console type the command 'masternode outputs' (these outputs will be used in Masternode Configuration File)" 
+echo "3 - In the Debug Console type the command 'masternode outputs' (these outputs will be used in Masternode Configuration File)"
 echo "4 - In your wallet, select 'Open Masternode Configuration File' from the Tools menu"
 echo "5 - Following the example, enter the required details on a new line (without #) and save the file"
 echo "6 - In your wallet, click 'Reload Config' from the 'Masternodes' tab"
 echo "7 - Select your Masternode and click 'Start alias'"
 echo "8 - In your VPS terminal, use command 'veco-cli masternode status' and you should see your Masternode was successfully started"
 echo ""
-decho "If you have any issues, please get in contact with the Veco Developers on Discord (https://discord.gg/Z7j9mz6)" 
+decho "If you have any issues, please get in contact with the Veco Developers on Discord (https://discord.gg/Z7j9mz6)"
 
 
 su $whoami
