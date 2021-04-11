@@ -1,13 +1,13 @@
 ## Veco Masternode Installation Guide
 
-This is a complete guide to setup a Masternode for Veco Coin.  This method uses a "cold" Windows wallet with a "hot" Ubuntu 16.04 Linux VPS.  The reason for this is so your coins will be safe in your Windows wallet offline and the VPS will host the Masternode but will not hold any coins.
+This is a complete guide to setup a Masternode for Veco Coin.  This method uses a "cold" Windows wallet with a "hot" Ubuntu 16.04 or Ubuntu 18.04 Linux VPS. The reason for this is so your coins will be safe in your Windows wallet offline and the VPS will host the Masternode but will not hold any coins.
 
 ## Requirements
 
 1. Download the latest Veco Windows wallet [**here**](https://github.com/VecoOfficial/Veco/releases)
 2. Download and install Bitvise SSH Client [**here**](https://www.bitvise.com/ssh-client-download)
 3. Exactly 1000 VECO coins sent to a new receiving address with at least 15 confirmations
-4. Ubuntu 16.04 VPS
+4. Ubuntu 16.04 or Ubuntu 18.04 VPS
 
 
 ## Running the Masternode script
@@ -18,9 +18,13 @@ This is a complete guide to setup a Masternode for Veco Coin.  This method uses 
 - Use the password provided by the VPS provider to gain access to the server
 - Once you are logged in, copy and paste the Masternode installation script below and follow the on-screen instructions 
 
-
+Ubuntu 16.04:
 ```bash
-wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/install.sh && chmod +x install.sh && ./install.sh
+wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/install_ubuntu16.sh && chmod +x install_ubuntu16.sh && ./install_ubuntu16.sh
+```
+Ubuntu 18.04:
+```bash
+wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/install_ubuntu18.sh && chmod +x install_ubuntu18.sh && ./install_ubuntu18.sh
 ```
 
 ## Completing the Masternode setup
@@ -36,12 +40,17 @@ wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/maste
 
 ---
 
-## Update script (from 1.0.0.0 to 1.1.0.0)
+## Update script
 
 To launch the installation, connect to your VPS via SSH and run this command:
 
+Ubuntu 16.04:
 ```bash
-wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/update_to_1.1.0.0.sh && chmod +x update_to_1.1.0.0.sh && ./update_to_1.1.0.0.sh
+wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/update_ubuntu16.sh && chmod +x update_ubuntu16.sh && ./update_ubuntu16.sh
+```
+Ubuntu 18.04:
+```bash
+wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/update_ubuntu18.sh && chmod +x update_ubuntu18.sh && ./update_ubuntu18.sh
 ```
 
 Follow the on-screen instructions.
