@@ -39,7 +39,16 @@ cat <<'FIG'
 FIG
 
 # Check for systemd
-systemctl --version >/dev/null 2>&1 || { decho "systemd is required. Are you using Ubuntu 16.04?"  >&2; exit 1; }
+systemctl --version >/dev/null 2>&1 || { decho "systemd is required. Are you using Ubuntu 16.04 or Ubuntu 18.04?"  >&2; exit 1; }
+version=$(lsb_release -rs)
+if [[ $version == "16.04" ]]; then
+        echo "Ubuntu $version detected, moving foward...";
+elif [[ $version == "18.04" ]]; then
+        echo "Ubuntu $version detected, moving foward...";
+else
+        echo "Ubuntu 16.04 or Ubuntu 18.04 is required. Are you using Ubuntu 16.04 or Ubuntu 18.04?"
+        exit 1
+fi
 
 # Check if executed as root user
 if [[ $EUID -ne 0 ]]; then
@@ -72,12 +81,12 @@ fi
 read -e -p "(Optional) Install Fail2ban? (Recommended) [Y/n]: " install_fail2ban
 
 # Update package and upgrade Ubuntu
-decho "Updating system and installing required packages..."
+echo "1) Updating system and installing required packages..."
 
 apt-get -y update >> $LOG_FILE 2>&1
 
 # Install required packages
-decho "Installing base packages and dependencies..."
+echo "2) Installing base packages and dependencies..."
 
 apt-get -y install sudo >> $LOG_FILE 2>&1
 apt-get -y install wget >> $LOG_FILE 2>&1
@@ -89,21 +98,21 @@ apt-get -y install pwgen >> $LOG_FILE 2>&1
 apt-get -y install mc >> $LOG_FILE 2>&1
 
 # Install daemon packages
-decho "Installing daemon packages and dependencies..."
+echo "3) Installing daemon packages and dependencies..."
 
 apt-get -y install software-properties-common libzmq3-dev pwgen >> $LOG_FILE 2>&1
 apt-get -y install git libboost-system-dev libboost-filesystem-dev libboost-chrono-dev libboost-program-options-dev libboost-test-dev libboost-thread-dev libboost-all-dev unzip libminiupnpc-dev python-virtualenv >> $LOG_FILE 2>&1
 apt-get -y install build-essential libtool autotools-dev automake pkg-config libssl-dev libevent-dev bsdmainutils >> $LOG_FILE 2>&1
 
 # Add Berkely PPA
-decho "Installing bitcoin PPA..."
+echo "4) Installing bitcoin PPA..."
 
 apt-add-repository -y ppa:bitcoin/bitcoin >> $LOG_FILE 2>&1
 apt-get -y update >> $LOG_FILE 2>&1
 apt-get -y install libdb4.8-dev libdb4.8++-dev >> $LOG_FILE 2>&1
 
 
-if [[ ("$install_fail2ban" == "y" || "$install_fail2ban" == "Y" || "$install_fail2ban" == "") ]]; then
+if [[ ("$install_fail2ban" == "y" || "$install_fail2ban" == "Y") ]]; then
 	decho "Optional install: Fail2ban"
 	cd ~
 	apt-get -y install fail2ban >> $LOG_FILE 2>&1
@@ -111,7 +120,7 @@ if [[ ("$install_fail2ban" == "y" || "$install_fail2ban" == "Y" || "$install_fai
 	systemctl start fail2ban >> $LOG_FILE 2>&1
 fi
 
-decho "Create user $whoami (if necessary)"
+echo "5) Create user $whoami (if necessary)"
 
 # Deactivate trap only for this command
 trap '' ERR
@@ -124,15 +133,23 @@ else
 	trap 'error ${LINENO}' ERR
 fi
 
-# Create veco.conf
-decho "Setting up Veco Core..."
+# Stop active core
+echo "6) Searching for active daemon..."
+SERVICE="vecod"
+if pgrep -x "$SERVICE" >/dev/null; then
+        pkill -f vecod >> $LOG_FILE 2>&1
+        sleep 20
+fi
 
 # Generate random passwords
 user=`pwgen -s 16 1`
 password=`pwgen -s 64 1`
 
-echo 'Downloading bootstrap and creating veco.conf...'
+# Create veco.conf
+echo "7) Downloading bootstrap and creating veco.conf..."
 wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/bootstrap.tar.gz>> $LOG_FILE 2>&1
+rm -rf /home/$whoami/.vecocore/blocks >> $LOG_FILE 2>&1
+rm -rf /home/$whoami/.vecocore/chainstate >> $LOG_FILE 2>&1
 tar xvzf bootstrap.tar.gz -C /home/$whoami>> $LOG_FILE 2>&1
 rm -rf bootstrap.tar.gz >> $LOG_FILE 2>&1
 cat << EOF > /home/$whoami/.vecocore/veco.conf
@@ -150,25 +167,22 @@ EOF
 chown -R $whoami:$whoami /home/$whoami/.vecocore
 
 # Install Veco Daemon
-echo 'Downloading daemon...'
+echo "8) Downloading daemon..."
 cd
-wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu18.tar.gz >> $LOG_FILE 2>&1
-tar xvzf vecocore-1.12.2.6-ubuntu18.tar.gz >> $LOG_FILE 2>&1
-chmod -R 755 vecocore-1.12.2.6
-
-## Stop active core
-echo 'Looking for active daemon...'
-SERVICE="vecod"
-if pgrep -x "$SERVICE" >/dev/null
-then
-echo "Stoping active Veco daemon..."
-pkill -f vecod >> $LOG_FILE 2>&1
-## Wait to kill properly
-sleep 30
+if [[ $version == "16.04" ]]; then
+        wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+        tar xvzf vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+        rm -rf vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+elif [[ $version == "18.04" ]]; then
+        wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu18.tar.gz >> $LOG_FILE 2>&1
+        tar xvzf vecocore-1.12.2.6-ubuntu18.tar.gz >> $LOG_FILE 2>&1
+        rm -rf vecocore-1.12.2.6-ubuntu18.tar.gz >> $LOG_FILE 2>&1
 else
-echo "No active daemon found"
+#Ubuntu 20.04
+        exit 1
 fi
 
+chmod -R 755 vecocore-1.12.2.6
 cp vecocore-1.12.2.6/bin/vecod /usr/bin/ >> $LOG_FILE 2>&1
 cp vecocore-1.12.2.6/bin/veco-cli /usr/bin/ >> $LOG_FILE 2>&1
 cp vecocore-1.12.2.6/bin/veco-tx /usr/bin/ >> $LOG_FILE 2>&1
@@ -178,20 +192,19 @@ rm -rf vecocore-1.12.2.6 >> $LOG_FILE 2>&1
 chown -R $whoami:$whoami /home/$whoami/.vecocore
 sudo -H -u $whoami bash -c 'vecod' >> $LOG_FILE 2>&1
 
-echo 'Veco Core prepared and launched...'
+echo "9) Veco Core prepared and launched..."
 
 sleep 10
 
 # Setting up sentinel
-decho "Setting up sentinel..."
 
 # Install sentinel
-echo 'Downloading sentinel...'
+echo '10) Downloading sentinel...'
 rm -rf /home/$whoami/sentinel >> $LOG_FILE 2>&1
 git clone https://github.com/VecoOfficial/sentinel.git /home/$whoami/sentinel >> $LOG_FILE 2>&1
 chown -R $whoami:$whoami /home/$whoami/sentinel >> $LOG_FILE 2>&1
 
-echo 'Setting up sentinel...'
+echo "11) Setting up sentinel..."
 cd /home/$whoami/sentinel
 sudo -H -u $whoami bash -c 'virtualenv ./venv' >> $LOG_FILE 2>&1
 sudo -H -u $whoami bash -c './venv/bin/pip install -r requirements.txt' >> $LOG_FILE 2>&1
@@ -214,7 +227,7 @@ crontab -u $whoami newCrontab >> $LOG_FILE 2>&1
 rm newCrontab >> $LOG_FILE 2>&1
 
 # Final Masternode instructions
-decho "Starting your Masternode"
+decho "12) Starting your Masternode"
 echo ""
 echo "To start your Masternode please follow the steps below:"
 echo "1 - In your VPS terminal, use command 'veco-cli mnsync status' and wait for AssetID: to be 999"
