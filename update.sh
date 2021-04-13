@@ -6,7 +6,7 @@
 # https://veco.to/              #
 #################################
 
-LOG_FILE=/tmp/update.log
+LOG_FILE=/tmp/vecoupdate.log
 
 decho () {
   echo `date +"%H:%M:%S"` $1
@@ -48,7 +48,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 ## Ask for veco user name
-read -e -p "Please enter the user name that runs Veco core |CaSe SeNsItIvE|: " whoami
+read -e -p "1) Please enter the user name that runs Veco core |CaSe SeNsItIvE|: " whoami
 
 ## Check if veco user exist
 getent passwd $whoami > /dev/null 2&>1
@@ -58,7 +58,7 @@ if [ $? -ne 0 ]; then
 fi
 
 ## Stop active core
-echo "Stoping active Veco core..."
+echo "2) Stoping active Veco core..."
 SERVICE="vecod"
 if pgrep -x "$SERVICE" >/dev/null; then
         pkill -f vecod >> $LOG_FILE 2>&1
@@ -66,7 +66,7 @@ if pgrep -x "$SERVICE" >/dev/null; then
 fi
 
 ## Download and Install new bin
-echo "Downloading new core and installing it..."
+echo "3) Downloading new core and installing it..."
 cd
 if [[ $version == "16.04" ]]; then
         wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
@@ -88,7 +88,6 @@ sudo cp vecocore-1.12.2.6/bin/veco-tx /usr/bin/ >> $LOG_FILE 2>&1
 rm -rf vecocore-1.12.2.6 >> $LOG_FILE 2>&1
 
 ## Backup configuration
-echo "Backup configuration file..."
 
 if [ "$whoami" != "root" ]; then
 	path=/home/$whoami
@@ -99,12 +98,12 @@ fi
 cd $path
 
 ## Relunch core
-echo "Relaunching Veco core..."
+echo "4) Relaunching Veco core..."
 chown -R $whoami:$whoami /home/$whoami/.vecocore
 sudo -H -u $whoami bash -c 'vecod' >> $LOG_FILE 2>&1
 
 ## Update sentinel
-echo "Updating sentinel..."
+echo "5) Updating sentinel..."
 rm -rf /home/$whoami/sentinel >> $LOG_FILE 2>&1
 git clone https://github.com/VecoOfficial/sentinel.git /home/$whoami/sentinel >> $LOG_FILE 2>&1
 chown -R $whoami:$whoami /home/$whoami/sentinel >> $LOG_FILE 2>&1
