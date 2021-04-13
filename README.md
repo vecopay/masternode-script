@@ -7,7 +7,7 @@ This is a complete guide to setup a Masternode for Veco Coin.  This method uses 
 1. Download the latest Veco Windows wallet [**here**](https://github.com/VecoOfficial/Veco/releases)
 2. Download and install Bitvise SSH Client [**here**](https://www.bitvise.com/ssh-client-download)
 3. Exactly 1000 VECO coins sent to a new receiving address with at least 15 confirmations
-4. Ubuntu 16.04 or Ubuntu 18.04 VPS
+4. Ubuntu 16.04 or Ubuntu 18.04 VPS. Script will detect your Ubuntu version.
 
 
 ## Running the Masternode script
@@ -18,13 +18,9 @@ This is a complete guide to setup a Masternode for Veco Coin.  This method uses 
 - Use the password provided by the VPS provider to gain access to the server
 - Once you are logged in, copy and paste the Masternode installation script below and follow the on-screen instructions 
 
-Ubuntu 16.04:
+Script will detect your Ubuntu version:
 ```bash
-wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/install_ubuntu16.sh && chmod +x install_ubuntu16.sh && ./install_ubuntu16.sh
-```
-Ubuntu 18.04:
-```bash
-wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/install_ubuntu18.sh && chmod +x install_ubuntu18.sh && ./install_ubuntu18.sh
+wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/install.sh && chmod +x install.sh && ./install.sh
 ```
 
 ## Completing the Masternode setup
@@ -44,13 +40,9 @@ wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/maste
 
 To launch the installation, connect to your VPS via SSH and run this command:
 
-Ubuntu 16.04:
+Script will detect your Ubuntu version:
 ```bash
-wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/update_ubuntu16.sh && chmod +x update_ubuntu16.sh && ./update_ubuntu16.sh
-```
-Ubuntu 18.04:
-```bash
-wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/update_ubuntu18.sh && chmod +x update_ubuntu18.sh && ./update_ubuntu18.sh
+wget https://raw.githubusercontent.com/VecoOfficial/masternode-script-veco/master/update.sh && chmod +x update.sh && ./update.sh
 ```
 
 Follow the on-screen instructions.
