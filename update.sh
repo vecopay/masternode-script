@@ -27,7 +27,19 @@ cat <<'FIG'
  '----------------'  '----------------'  '----------------'  '----------------' 
 FIG
 
-decho "Starting Veco 1.12.2.6 Masternode update. This will take a few minutes..."
+echo "Starting Veco 1.12.2.6 Masternode update. This will take a few minutes..."
+
+# Check for version
+systemctl --version >/dev/null 2>&1 || { decho "systemd is required. Are you using Ubuntu 16.04 or Ubuntu 18.04?"  >&2; exit 1; }
+version=$(lsb_release -rs)
+if [[ $version == "16.04" ]]; then
+        echo "Ubuntu $version detected, moving foward...";
+elif [[ $version == "18.04" ]]; then
+        echo "Ubuntu $version detected, moving foward...";
+else
+        echo "Ubuntu 16.04 or Ubuntu 18.04 is required. Are you using Ubuntu 16.04 or Ubuntu 18.04?"
+        exit 1
+fi
 
 ## Check if root user
 if [[ $EUID -ne 0 ]]; then
@@ -47,15 +59,28 @@ fi
 
 ## Stop active core
 echo "Stoping active Veco core..."
-pkill -f vecod >> $LOG_FILE 2>&1
-
-## Wait to kill properly
-sleep 10
+SERVICE="vecod"
+if pgrep -x "$SERVICE" >/dev/null; then
+        pkill -f vecod >> $LOG_FILE 2>&1
+        sleep 20
+fi
 
 ## Download and Install new bin
 echo "Downloading new core and installing it..."
-wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
-sudo tar xvzf vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+cd
+if [[ $version == "16.04" ]]; then
+        wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+        tar xvzf vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+        rm -rf vecocore-1.12.2.6-ubuntu16.tar.gz >> $LOG_FILE 2>&1
+elif [[ $version == "18.04" ]]; then
+        wget https://github.com/VecoOfficial/Veco/releases/download/v1.12.2.6/vecocore-1.12.2.6-ubuntu18.tar.gz >> $LOG_FILE 2>&1
+        tar xvzf vecocore-1.12.2.6-ubuntu18.tar.gz >> $LOG_FILE 2>&1
+        rm -rf vecocore-1.12.2.6-ubuntu18.tar.gz >> $LOG_FILE 2>&1
+else
+#Ubuntu 20.04
+        exit 1
+fi
+
 chmod -R 755 vecocore-1.12.2.6
 sudo cp vecocore-1.12.2.6/bin/vecod /usr/bin/ >> $LOG_FILE 2>&1
 sudo cp vecocore-1.12.2.6/bin/veco-cli /usr/bin/ >> $LOG_FILE 2>&1
@@ -80,9 +105,10 @@ sudo -H -u $whoami bash -c 'vecod' >> $LOG_FILE 2>&1
 
 ## Update sentinel
 echo "Updating sentinel..."
-cd $path/sentinel
-git pull >> $LOG_FILE 2>&1
-
+rm -rf /home/$whoami/sentinel >> $LOG_FILE 2>&1
+git clone https://github.com/VecoOfficial/sentinel.git /home/$whoami/sentinel >> $LOG_FILE 2>&1
+chown -R $whoami:$whoami /home/$whoami/sentinel >> $LOG_FILE 2>&1
+cd /home/$whoami/sentinel
 sudo -H -u $whoami bash -c 'virtualenv ./venv' >> $LOG_FILE 2>&1
 sudo -H -u $whoami bash -c './venv/bin/pip install -r requirements.txt' >> $LOG_FILE 2>&1
 
