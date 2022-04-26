@@ -22,7 +22,7 @@ If you need any additional help, feel free to join [our discord](https://discord
 
 ### Step 1 – Set up a wallet
 
-This involves downloading and synchronizing the [wallet](https://github.com/VecoOfficial/Veco/releases). Please use [bootstrap](https://github.com/VecoOfficial/Veco/releases/download/v1.13.4/bootstrap.zip) to speed up the process.
+This involves downloading and synchronizing the [wallet](https://github.com/vecopay/veco/releases). Please use [bootstrap](https://github.com/vecopay/veco/releases/download/v1.13.4/bootstrap.zip) to speed up the process.
 
 ### Step 2 – Create collateral
 
@@ -136,11 +136,11 @@ sudo fallocate -l 2G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapf
 
 ### Step 4 – Install masternode binaries and configuration
 
-Get the latest binaries [from github](https://github.com/VecoOfficial/Veco/releases). At the time of writing, latest version is **v1.13.4**. You should check on github and adapt the following commands with **latest binaries** and **Ubuntu version** reference.
+Get the latest binaries [from github](https://github.com/vecopay/veco/releases). At the time of writing, latest version is **v1.13.4**. You should check on github and adapt the following commands with **latest binaries** and **Ubuntu version** reference.
 
 Example for **v1.13.4** and **Ubuntu 18.04** VPS:
 ```bash
-wget https://github.com/VecoOfficial/Veco/releases/download/v1.13.4/vecocore-1.13.4-x86_64-ubuntu18-gnu.tar.gz
+wget https://github.com/vecopay/veco/releases/download/v1.13.4/vecocore-1.13.4-x86_64-ubuntu18-gnu.tar.gz
 ```
 ```bash
 tar zxvf vecocore-1.13.4-x86_64-ubuntu18-gnu.tar.gz
@@ -187,7 +187,7 @@ Save the file (**ctrl-x**, then type **y** and hit **enter**)
 
 Now that you have everything set up, it’s time to start the daemon. To speed up the synchronization of the blockchain, you may download a booststrap file and put it in the .vecocore directory you created earlier, the one where your veco.conf file was created (this is not mandatory):
 ```bash
-wget https://github.com/VecoOfficial/Veco/releases/download/v1.13.4/bootstrap.zip && unzip bootstrap.zip
+wget https://github.com/vecopay/veco/releases/download/v1.13.4/bootstrap.zip && unzip bootstrap.zip
 ```
 And finally launch the masternode daemon:
 ```bash
@@ -258,7 +258,7 @@ Sentinel is not strictly needed for payouts, but if you want to monitor your mas
 
 The following commands will suppose that sentinel is installed in the home directory of veco user.
 ```bash
-cd ~ && git clone https://github.com/VecoOfficial/sentinel.git
+cd ~ && git clone https://github.com/vecopay/sentinel.git
 ```
 
 #### B – Compile and run code
